@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Battle Tanks</string>
+
+    <string name="highScore">High Score: 0</string>
+
+    <string name="score">Score : 0</string>
+
+    <string name="startBtn">Start</string>
+</resources>
