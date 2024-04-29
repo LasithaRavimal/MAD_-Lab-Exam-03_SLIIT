@@ -8,8 +8,10 @@ import android.graphics.Paint
 import android.view.MotionEvent
 import android.view.View
 
-
+// Define GameView class which extends View
 class GameView(var c: Context, var gameTask: GameTask) : View(c) {
+
+    // Initialize variables
     private var myPaint: Paint = Paint()
     private var speed = 1
     private var time = 0
@@ -20,17 +22,23 @@ class GameView(var c: Context, var gameTask: GameTask) : View(c) {
     var viewHeight = 0
     var myTankPosition = 0
 
+    // SharedPreferences for storing high score
     private val preferences: SharedPreferences = c.getSharedPreferences("GamePreferences", Context.MODE_PRIVATE)
 
+    // Constructor
     init {
         myPaint = Paint()
     }
+
+    // Method to reset game state
     fun resetGameState() {
         otherTanks.clear()
         score = 0
         speed = 1
     }
-    override   fun onDraw(canvas: Canvas) {
+
+    // onDraw method to draw the game elements
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         viewWidth = measuredWidth
         viewHeight = measuredHeight
@@ -43,7 +51,7 @@ class GameView(var c: Context, var gameTask: GameTask) : View(c) {
             otherTanks.add(map)
         }
         // Update game time
-        time += 8 + speed
+        time += 10 + speed
 
         // Set up drawing properties
         myPaint.style = Paint.Style.FILL
@@ -63,6 +71,7 @@ class GameView(var c: Context, var gameTask: GameTask) : View(c) {
         myPaint.color = Color.GREEN
         var highScore = getHighScore()
 
+        // Iterate through other tanks
         for (i in otherTanks.indices) {
             try {
                 val tankX = otherTanks[i]["lane"] as Int * viewWidth / 3 + viewWidth / 15
@@ -75,7 +84,7 @@ class GameView(var c: Context, var gameTask: GameTask) : View(c) {
                 d2.draw(canvas)
                 if (otherTanks[i]["lane"] as Int == myTankPosition) {
                     if (tankY > viewHeight - 2 - TankHeight && tankY < viewHeight - 2) {
-                        gameTask.closeGame(score)
+                        gameTask.closeGame(score) // Close game if collision detected
                     }
                 }
                 if (tankY > viewHeight + TankHeight) {
@@ -92,16 +101,17 @@ class GameView(var c: Context, var gameTask: GameTask) : View(c) {
             }
         }
 
-        myPaint.isFakeBoldText = true// Set text properties for bold
-
+        // Draw score, high score, and speed on canvas
+        myPaint.isFakeBoldText = true
         myPaint.color = Color.WHITE
         myPaint.textSize = 60f
         canvas.drawText("Score : $score", 80f, 80f, myPaint)
         canvas.drawText("High Score : $highScore", 250f, 150f, myPaint)
         canvas.drawText("Speed : $speed", 600f, 80f, myPaint)
-        invalidate()
+        invalidate() // Redraw the view
     }
 
+    // onTouchEvent method to handle touch events
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event!!.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -119,17 +129,18 @@ class GameView(var c: Context, var gameTask: GameTask) : View(c) {
                 invalidate() // Redraw the view after updating tank position
             }
             MotionEvent.ACTION_UP -> {
-
+                // Handle touch up event if needed
             }
-
         }
         return true
     }
 
+    // Method to save high score in SharedPreferences
     private fun saveHighScore(score: Int) {
         preferences.edit().putInt("HighScore", score).apply()
     }
 
+    // Method to retrieve high score from SharedPreferences
     private fun getHighScore(): Int {
         return preferences.getInt("HighScore", 0)
     }
