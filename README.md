@@ -1,4 +1,4 @@
-# MAD_-Lab-Exam-03_SLIIT
+# MAD_-Lab-Exam-03_SLIIT_2Y2Sem-MAD
 #kotlin Mini Game
  
  
